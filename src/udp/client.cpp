@@ -23,14 +23,14 @@ void echo_write(uv_udp_send_t *req, int status) {
   free(req);
 }
 
-void after_read(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf,
-                const struct sockaddr *addr, unsigned flags) {
-  if (nread > 0) {
-    printf("Received: %.*s", (int)nread, buf->base);
-  }
-  printf("free after read\n");
-  free(buf->base);
-}
+// void after_read(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf,
+//                 const struct sockaddr *addr, unsigned flags) {
+//   if (nread > 0) {
+//     printf("Received: %.*s", (int)nread, buf->base);
+//   }
+//   printf("free after read\n");
+//   free(buf->base);
+// }
 
 int main() {
   // std::thread client1([] {});
@@ -46,7 +46,7 @@ int main() {
 
   uv_udp_init(loop, &client);
   std::string message = "Hello Server";
-  for (uint16_t count = 0U; count < 5; count++) {
+  for (uint16_t count = 0U; count < 100; count++) {
     uv_buf_t write_buf = uv_buf_init(message.data(), sizeof(message));
 
     uv_udp_send_t *req =
