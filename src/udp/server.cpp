@@ -7,23 +7,23 @@ void alloc_buffer(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buf) {
   buf->len = suggested_size;
 }
 
-// void echo_write(uv_udp_send_t *req, int status) {
-//   printf("free echo write\n");
-//   if (status) {
-//     fprintf(stderr, "Write error %s\n", uv_strerror(status));
-//   }
-//   free(req);
-// }
+void echo_write(uv_udp_send_t *req, int status) {
+  printf("free echo write\n");
+  if (status) {
+    fprintf(stderr, "Write error %s\n", uv_strerror(status));
+  }
+  free(req);
+}
 
 void echo_read(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf,
                const struct sockaddr *addr, unsigned flags) {
   printf("Server received %d bytes\n", (int)nread);
   if (nread > 0) {
     printf("%s\n", buf->base);
-    // uv_udp_send_t *req =
-    //     static_cast<uv_udp_send_t *>(malloc(sizeof(uv_udp_send_t)));
-    // uv_buf_t send_buf = uv_buf_init(buf->base, nread);
-    // uv_udp_send(req, handle, &send_buf, 1, addr, echo_write);
+    uv_udp_send_t *req =
+        static_cast<uv_udp_send_t *>(malloc(sizeof(uv_udp_send_t)));
+    uv_buf_t send_buf = uv_buf_init(buf->base, nread);
+    uv_udp_send(req, handle, &send_buf, 1, addr, echo_write);
   }
 
   if (buf->base) {
